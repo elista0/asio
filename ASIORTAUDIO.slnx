@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="nolib/nolib.vcxproj" Id="480837b3-2e78-4ff2-9ac7-9fe1ed65a26b" />
+</Solution>
