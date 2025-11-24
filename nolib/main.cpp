@@ -25,6 +25,7 @@ struct StereoWavBuffer
 
 StereoWavBuffer snareBuffer;
 StereoWavBuffer hh;
+StereoWavBuffer kick;
 
 struct Hit
 {
@@ -304,6 +305,8 @@ void midiCallback(double deltatime,
                 currentHits.insert({ handleCount ++, {snareBuffer,0,false,vel/100.0F} });
             if (note == 0x26)
                 currentHits.insert({ handleCount++, {hh,0,false,vel / 100.0F} });
+            if (note == 0x28)
+                currentHits.insert({ handleCount++, {kick,0,false,vel / 100.0F} });
         }
         else
             std::cout << "Note OFF ch " << (int)channel
@@ -348,7 +351,7 @@ int main()
         if (nPorts == 0)
         {
             std::cout << "No MIDI input ports available.\n";
-            return 0;
+        
         }
 
         // Open first port (or let user choose)
@@ -368,14 +371,15 @@ int main()
     catch (RtMidiError& e)
     {
         std::cerr << "RtMidiError: " << e.getMessage() << "\n";
-        return 1;
+
     }
 
 
     memset(empty, 0, 256 * sizeof(float));
     snareBuffer = loadWavToStereoFloat("./samples/snare.wav" );
     hh = loadWavToStereoFloat("./samples/hh.wav");
-
+ 
+    kick = loadWavToStereoFloat("./samples/kick/RD_K_4.wav");
 
 
     try
@@ -425,27 +429,17 @@ int main()
         while (true)
         {
              int key = _getch();
-             if (key == 27) break;
-            /*
+            if (key == 27) break;
+            
             if (key == 's')
-                currentHits.insert({ handleCount , {snareBuffer,0,false,5} });
+                currentHits.insert({ handleCount ++, {snareBuffer,0,false,5} });
             if (key == 'h')
-                currentHits.insert({ handleCount , {hh,0,false,.5F} });
+                currentHits.insert({ handleCount ++, {hh,0,false,.5F} });
+            if (key == 'k')
+                currentHits.insert({ handleCount ++, {kick,0,false,.5F} });
 
-
-            ++handleCount;
-            auto k = getTimeMs();
-            if ( k> (t + 50))
-            {
-                if (sh)
-                    currentHits.insert({ handleCount , {snareBuffer,0,false,.5} });
-                else
-                    currentHits.insert({ handleCount , {hh,0,false,.2F} });
-                t = k; 
-                sh = !sh;
-                //printf("%s\n", sh?"H":"S");
-            }*/
-
+          
+           
         }
         if (dac.isStreamRunning())
             dac.stopStream();
